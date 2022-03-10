@@ -8,9 +8,6 @@ import {cachedDataVersionTag} from "v8";
 
 const faqRouter =  express.Router();
 
-// TODO: faqRouter
-// TODO: CRUD
-
 faqRouter.post("/", ensureLoggedIn, isAdmin, async (req, res) => {
     try {
         const faqController = FaqController.getInstance();
