@@ -1,6 +1,6 @@
-import {User} from "../models/user.model";
+import {User, UserProps} from "../models/user.model";
 import {Conversation} from "../models/conversation.model";
-import {getRepository, Repository} from "typeorm";
+import {DeleteResult, getRepository, Repository} from "typeorm";
 
 export class UserController {
 
@@ -21,6 +21,10 @@ export class UserController {
         return UserController.instance;
     }
 
+    public async getByUserId(userId: string): Promise<User> {
+        return await this.userRepository.findOneOrFail({where: {userId: userId}});
+    }
+
     public async getByUsername(username: string): Promise<User> {
         return await this.userRepository.findOneOrFail({where: {username: username}});
     }
@@ -29,8 +33,21 @@ export class UserController {
         return await this.userRepository.find();
     }
 
-    //TODO: UpdateUser()
-    //TODO: DeleteUser()
+    public async updateUser(userId: string, props: UserProps): Promise<User>{
+        await this.userRepository.createQueryBuilder()
+            .update()
+            .set(props)
+            .where("userid=:userId", {userId})
+            .execute()
+
+        return this.getByUserId(userId);
+    }
+
+    public async deleteUser(idUser: string): Promise<DeleteResult>{
+        return await this.userRepository.softDelete(idUser);
+    }
+
+
     //TODO: GetConversation()
     //TODO: A voire pour mettre un GetRouteUser()
 }
