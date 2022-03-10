@@ -34,7 +34,7 @@ export class UserController {
         return this.userRepository.save(user);
     }
 
-    public async getByUserId(userId: string): Promise<User> {
+    public async getById(userId: string): Promise<User> {
         return await this.userRepository.findOneOrFail({where: {id: userId}});
     }
 
@@ -54,7 +54,7 @@ export class UserController {
             .where("id=:userId", {userId})
             .execute()
 
-        return this.getByUserId(userId);
+        return this.getById(userId);
     }
 
     public async deleteUser(idUser: string): Promise<DeleteResult>{

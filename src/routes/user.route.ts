@@ -53,7 +53,7 @@ userRouter.get('/:userId', async (req, res)=>{
         }
 
         const userController = await UserController.getInstance();
-        const user = await userController.getByUserId(userId);
+        const user = await userController.getById(userId);
         if(user){
             res.json(user);
             res.status(201).end();

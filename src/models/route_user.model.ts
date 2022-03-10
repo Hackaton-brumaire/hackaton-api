@@ -41,7 +41,7 @@ export class RouteUser implements RouteUserProps {
     @Column({type: "float", nullable: false})
     startLongitude: number;
 
-    @Column({type : "double",nullable : false})
+    @Column({type : "float",nullable : false})
     distance : number;
 
     @IsDate()
