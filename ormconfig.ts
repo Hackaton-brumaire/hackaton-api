@@ -8,6 +8,11 @@ module.exports = {
     database: process.env.DB_NAME,
     entities: [__dirname + "/**/models/*.ts"],
     synchronize: true,
-    seeds: ['src/**/*.seed.ts'],
-    factories: ['src/**/*.factory.ts'],
+    url: process.env.POSTGRES_URL,
+    extra: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
+    }
 }
