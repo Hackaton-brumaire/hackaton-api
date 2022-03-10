@@ -35,7 +35,7 @@ export class UserController {
     }
 
     public async getByUserId(userId: string): Promise<User> {
-        return await this.userRepository.findOneOrFail({where: {userId: userId}});
+        return await this.userRepository.findOneOrFail({where: {id: userId}});
     }
 
     public async getByUsername(username: string): Promise<User> {
@@ -43,6 +43,7 @@ export class UserController {
     }
 
     public async getAll(): Promise<User[]> {
+        console.log("getAll")
         return await this.userRepository.find();
     }
 

@@ -24,7 +24,6 @@ export class AuthController {
 
     public async register(props: UserProps): Promise<User> {
         const user = this.userRepository.create({...props});
-        console.log("----auth.controller.ts----")
         const err = await validate(user);
         if (err.length > 0) {
             throw err;
