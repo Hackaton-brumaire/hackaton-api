@@ -18,7 +18,7 @@ export class Conversation {
     @OneToMany(() => Message, message => message.conversation)
     messages: Message[];
 
-    @OneToOne(() => ActiveConversation, activeConversation => activeConversation.conversation)
+    @OneToOne(() => ActiveConversation, activeConversation => activeConversation.conversation, {eager: true})
     activeConversation: ActiveConversation;
 
     @CreateDateColumn()

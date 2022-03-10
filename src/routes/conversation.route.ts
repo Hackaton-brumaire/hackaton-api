@@ -5,9 +5,6 @@ import {User} from "../models/user.model";
 
 const conversationRouter =  express.Router();
 
-// TODO: conversationRouter
-// TODO: CRUD
-
 conversationRouter.get("/:conversationId", async (req, res) => {
     try {
         const conversationId = req.params.conversationId;
@@ -56,6 +53,18 @@ conversationRouter.get("/:conversationId/members", async (req, res) => {
         res.status(400).json(error);
     }
 });
+
+conversationRouter.post("/init-conversation", async (req, res) => {
+    try {
+        const conversationController = ConversationController.getInstance();
+        const conversation = await conversationController.initConversation(req.user as User);
+        res.json(conversation);
+    } catch (error) {
+        logger.error(`${req.route.path} \n ${error}`);
+        res.status(400).json(error);
+    }
+});
+
 export {
     conversationRouter
 }

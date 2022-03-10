@@ -3,6 +3,7 @@ import {Conversation} from "../models/conversation.model";
 import {Message, MessageProps} from "../models/message.model";
 import {User} from "../models/user.model";
 import {validate} from "class-validator";
+import {ActiveConversation, ActiveConversationProps} from "../models/active_conversation.model";
 
 
 export class ConversationController {
@@ -64,5 +65,27 @@ export class ConversationController {
             throw err;
         }
         return this.messageRepository.save(message);
+    }
+
+    public async initConversation(user: User): Promise<Conversation> {
+        let props: ActiveConversationProps = new class implements ActiveConversationProps {
+            customer: User;
+            expert: User;
+        };
+        props.customer = user;
+        const experts: User[] = await getRepository(User).createQueryBuilder()
+            .select()
+            .where("User.userType='EXPERT'")
+            .getMany();
+
+        try {
+            props.expert = experts[Math.floor(Math.random() * (experts.length + 1))];
+        }catch (e){
+            throw "There is no expert available";
+        }
+
+        const activeConversation = getRepository(ActiveConversation).create(props);
+        await getRepository(ActiveConversation).save(activeConversation);
+        return activeConversation.conversation
     }
 }
