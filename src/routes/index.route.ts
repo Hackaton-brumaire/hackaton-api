@@ -20,7 +20,7 @@ export function buildRoutes() {
     configure()
     logger.info("Init routes")
     //router.use(require('cors')({credentials: true, origin: process.env.FRONT_WEB_URL}));
-    router.use(require('cors')({credentials: true, origin: "127.0.0.1"}));
+    router.use(require('cors')({credentials: true, origin: "*"}));
     router.use(require('express-session')({
         secret: process.env.APP_SECRET,
         resave: false,
