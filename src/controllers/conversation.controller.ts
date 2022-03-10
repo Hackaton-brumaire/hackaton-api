@@ -1,7 +1,8 @@
 import {getRepository, Repository} from "typeorm";
 import {Conversation} from "../models/conversation.model";
-import {Message} from "../models/message.model";
+import {Message, MessageProps} from "../models/message.model";
 import {User} from "../models/user.model";
+import {validate} from "class-validator";
 
 
 export class ConversationController {
@@ -54,5 +55,14 @@ export class ConversationController {
             .leftJoin("ActiveConversation.conversation", "Conversation")
             .where("Conversation.id=:conversation", {conversationId})
             .getMany()
+    }
+
+    public async sendMessage(user: User, conversation: Conversation, props: MessageProps): Promise<Message> {
+        const message = this.messageRepository.create({...props, user, conversation});
+        const err = await validate(message);
+        if (err.length > 0) {
+            throw err;
+        }
+        return this.messageRepository.save(message);
     }
 }

@@ -1,12 +1,12 @@
 import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
-export interface faqProps {
+export interface FaqProps {
     ask: string;
     response: string;
 }
 
 @Entity()
-export class Faq implements faqProps {
+export class Faq implements FaqProps {
 
     @PrimaryGeneratedColumn("uuid")
     id: string;
