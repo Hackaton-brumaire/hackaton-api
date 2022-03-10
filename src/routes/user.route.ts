@@ -101,7 +101,7 @@ userRouter.get('/', async (req, res)=>{
 });
 
 /*Update*/
-userRouter.post('/:userId', ensureLoggedIn, async (req, res)=>{
+userRouter.post('/:userId', async (req, res)=>{
     const userId = req.params.userId;
     if(userId === undefined){
         res.status(400).send('UserId undefined').end();

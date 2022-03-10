@@ -19,9 +19,10 @@ export function buildRoutes() {
     const router = Router();
     configure()
     logger.info("Init routes")
-    router.use(require('cors')({credentials: true, origin: process.env.FRONT_WEB_URL}));
+    //router.use(require('cors')({credentials: true, origin: process.env.FRONT_WEB_URL}));
+    router.use(require('cors')({credentials: true, origin: "127.0.0.1"}));
     router.use(require('express-session')({
-        secret: process.env.ORG_APP_SECRET,
+        secret: process.env.APP_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {
@@ -43,4 +44,6 @@ export function buildRoutes() {
     router.use("/faq", faqRouter);
     router.use("/route_user", routeUserRouter)
     router.use("/purchase_ticket", purchaseTicketRouter)
+
+    return router;
 }
