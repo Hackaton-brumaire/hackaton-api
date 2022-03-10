@@ -50,7 +50,7 @@ export class UserController {
         await this.userRepository.createQueryBuilder()
             .update()
             .set(props)
-            .where("userid=:userId", {userId})
+            .where("id=:userId", {userId})
             .execute()
 
         return this.getByUserId(userId);
@@ -60,7 +60,4 @@ export class UserController {
         return await this.userRepository.softDelete(idUser);
     }
 
-
-    //TODO: GetConversation()
-    //TODO: A voire pour mettre un GetRouteUser()
 }

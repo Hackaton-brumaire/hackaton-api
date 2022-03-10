@@ -1,11 +1,13 @@
 import express from "express";
 import {UserController} from "../controllers/user.controller";
+import {isAdmin} from "../middlewares/user.middleware";
+import {ensureLoggedIn} from "../middlewares/auth.middleware";
 
 const userRouter =  express.Router();
 
 
 /*Create*/
-userRouter.put('/', async (req, res)=>{
+userRouter.put('/', isAdmin, async (req, res)=>{
     const username = req.body.username;
     const mail = req.body.mail;
     const password = req.body.password;
@@ -79,6 +81,7 @@ userRouter.get('/:username', async (req, res)=>{
     }
 
     res.status(404).send('User not found').end();
+    return;
 
 });
 
@@ -93,11 +96,12 @@ userRouter.get('/', async (req, res)=>{
         return;
     }
     res.status(404).send('No Users').end();
+    return;
 
 });
 
 /*Update*/
-userRouter.post('/:userId', async (req, res)=>{
+userRouter.post('/:userId', ensureLoggedIn, async (req, res)=>{
     const userId = req.params.userId;
     if(userId === undefined){
         res.status(400).send('UserId undefined').end();
@@ -157,7 +161,6 @@ userRouter.delete('/:userId', async (req, res)=>{
 
     res.status(500).send('').end();
     return;
-
 });
 
 
