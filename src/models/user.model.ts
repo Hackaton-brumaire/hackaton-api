@@ -35,10 +35,6 @@ export class User implements UserProps {
 
     @Length(5, 20)
     @IsNotEmpty()
-
-    @Column({default: null, nullable: true })
-    countTicket: number;
-
     @Column({unique: true, nullable: false, length: 20})
     username: string;
 

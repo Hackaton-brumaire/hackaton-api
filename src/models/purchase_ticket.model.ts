@@ -1,6 +1,6 @@
 import {User} from "./user.model";
 import {Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert} from "typeorm";
-import {IsDate, IsDefined} from "class-validator";
+import {IsDate} from "class-validator";
 
 export interface PurchaseTicketProps {
     user: User;
@@ -34,10 +34,4 @@ export class PurchaseTicket implements PurchaseTicketProps {
     updatedAt: Date;
     @DeleteDateColumn()
     deletedAt: Date;
-
-    
-    @BeforeInsert()
-    async set(password: string) {
-        this.password = await hash(password || this.password, 10)
-    }
 }

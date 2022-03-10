@@ -27,33 +27,28 @@ export class PurchaseTicketController {
     public async getRequestTicket(userId: string): Promise<{requestTicket: boolean, score: number}> {
         const user = await getRepository(User).findOneOrFail(userId);
 
-        let score = user.score;
-        let ticketNumber = user.countTicket;
-        let requestTicket = false;
-
-        if(score === 100 && ticketNumber === 0){
-            requestTicket = true;
-        }
-
         let data = {
-            requestTicket: requestTicket,
-            score: score
+            requestTicket: user.score === 100 && user.purchaseTickets.length === 0? true:false,
+            score: user.score
         };
 
         return data;
     }
 
-    public async updateTicket(userId: string, ticketId: string, props: PurchaseTicketProps): Promise<void> {
+    public async updateTicket(userId: string, ticketId: string, props: PurchaseTicketProps): Promise<PurchaseTicket> {
         const user = await getRepository(User).findOneOrFail(userId);
 
         await this.purchaseTicketRepository.createQueryBuilder()
             .update()
             .set(props)
             .where("id=:ticket", {ticketId})
-            .execute()
+            .execute();
+
+        return this.purchaseTicketRepository.findOneOrFail(ticketId);
     }
 
-    public async updatetUserPoint(user: User): Promise<PurchaseTicket> {
+    public async updatetUserPoint(userId: string): Promise<PurchaseTicket> {
+        let user: User = await getRepository(User).findOneOrFail(userId);
         const scoreForOneticket = 100;
 
         if(user.score === scoreForOneticket){

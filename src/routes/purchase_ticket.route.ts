@@ -16,10 +16,10 @@ purchaseTicketRouter.get("/me", async (req, res) => {
     }
 });
 
-purchaseTicketRouter.put("/ticket", async (req, res) => {
+purchaseTicketRouter.put("/", async (req, res) => {
     try {
         const purchaseTicketController = PurchaseTicketController.getInstance();
-        const updateTicket = await purchaseTicketController.updateTicket((req.user as User).id, req.ticketId, req.body);
+        const updateTicket = await purchaseTicketController.updateTicket((req.user as User).id, req.body.ticketId, req.body);
         res.json(updateTicket);
     } catch (error) {
         logger.error(`${req.route.path} \n ${error}`);
@@ -30,7 +30,7 @@ purchaseTicketRouter.put("/ticket", async (req, res) => {
 purchaseTicketRouter.put("/point", async (req, res) => {
     try {
         const purchaseTicketController = PurchaseTicketController.getInstance();
-        const userPoint = await purchaseTicketController.updatetUserPoint((req.user as User));
+        const userPoint = await purchaseTicketController.updatetUserPoint((req.user as User).id);
         res.json(userPoint);
     } catch (error) {
         logger.error(`${req.route.path} \n ${error}`);
@@ -38,10 +38,10 @@ purchaseTicketRouter.put("/point", async (req, res) => {
     }
 });
 
-purchaseTicketRouter.put("/use-date", async (req, res) => {
+purchaseTicketRouter.put("/use-date/:purchaseTicketId", async (req, res) => {
     try {
         const purchaseTicketController = PurchaseTicketController.getInstance();
-        const useDate = await purchaseTicketController.updateUseDate(req.purchaseTicketId, req.body);
+        const useDate = await purchaseTicketController.updateUseDate(req.params.purchaseTicketId, req.body);
         res.json(useDate);
     } catch (error) {
         logger.error(`${req.route.path} \n ${error}`);
@@ -49,10 +49,10 @@ purchaseTicketRouter.put("/use-date", async (req, res) => {
     }
 });
 
-purchaseTicketRouter.delete("/remove", async (req, res) => {
+purchaseTicketRouter.delete("/", async (req, res) => {
     try {
         const purchaseTicketController = PurchaseTicketController.getInstance();
-        const removeTicket = await purchaseTicketController.removeTicket((req.user as User).id, req.ticketId);
+        const removeTicket = await purchaseTicketController.removeTicket((req.user as User).id, req.body.ticketId);
         res.json(removeTicket);
     } catch (error) {
         logger.error(`${req.route.path} \n ${error}`);
