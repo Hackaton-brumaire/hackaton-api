@@ -22,7 +22,7 @@ authRouter.post('/register', ensureLoggedOut, async (req, res, next) => {
             res.status(400).json(error);
         }
     },
-    passport.authenticate('local-agir-pour-tous'),
+    passport.authenticate('local-hackaton-api'),
     (req, res) => res.json(req.user));
 
 

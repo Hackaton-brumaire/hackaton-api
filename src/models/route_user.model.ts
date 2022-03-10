@@ -1,7 +1,7 @@
 import {User} from "./user.model";
 import {Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import {IsDate, IsDefined, IsLatitude, IsLongitude} from "class-validator";
-import {ManyToOne} from "typeorm/browser";
+import {ManyToOne} from "typeorm";
 
 export interface PositionsTrip{
     latitude : number;

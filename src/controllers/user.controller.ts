@@ -1,6 +1,7 @@
-import {User} from "../models/user.model";
+import {User, UserProps} from "../models/user.model";
 import {Conversation} from "../models/conversation.model";
-import {getRepository, Repository} from "typeorm";
+import {DeleteResult, getRepository, Repository} from "typeorm";
+import {validate} from "class-validator";
 
 export class UserController {
 
@@ -21,16 +22,43 @@ export class UserController {
         return UserController.instance;
     }
 
+    public async create(props: UserProps): Promise<User>{
+        const user = this.userRepository.create({
+            ...props
+        });
+
+        const err = await validate(user);
+        if(err.length > 0){
+            throw err;
+        }
+        return this.userRepository.save(user);
+    }
+
+    public async getByUserId(userId: string): Promise<User> {
+        return await this.userRepository.findOneOrFail({where: {id: userId}});
+    }
+
     public async getByUsername(username: string): Promise<User> {
         return await this.userRepository.findOneOrFail({where: {username: username}});
     }
 
     public async getAll(): Promise<User[]> {
+        console.log("getAll")
         return await this.userRepository.find();
     }
 
-    //TODO: UpdateUser()
-    //TODO: DeleteUser()
-    //TODO: GetConversation()
-    //TODO: A voire pour mettre un GetRouteUser()
+    public async updateUser(userId: string, props: UserProps): Promise<User>{
+        await this.userRepository.createQueryBuilder()
+            .update()
+            .set(props)
+            .where("id=:userId", {userId})
+            .execute()
+
+        return this.getByUserId(userId);
+    }
+
+    public async deleteUser(idUser: string): Promise<DeleteResult>{
+        return await this.userRepository.softDelete(idUser);
+    }
+
 }

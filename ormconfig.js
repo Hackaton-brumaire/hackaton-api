@@ -8,6 +8,5 @@ module.exports = {
     database: process.env.DB_NAME,
     entities: [__dirname + "/**/models/*.ts"],
     synchronize: true,
-    ssl: {rejectUnauthorized: false}
-
-}
+    ssl: { rejectUnauthorized: false }
+};

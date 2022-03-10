@@ -1,5 +1,13 @@
 import {User} from "./user.model";
-import {Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, UpdateDateColumn} from "typeorm";
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 import {IsDate, IsDefined} from "class-validator";
 
 export interface PurchaseTicketProps {
@@ -10,6 +18,9 @@ export interface PurchaseTicketProps {
 
 @Entity()
 export class PurchaseTicket implements PurchaseTicketProps {
+
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
     @ManyToOne(() => User, user => user.purchaseTickets, { onDelete:"CASCADE"})
     user: User;
