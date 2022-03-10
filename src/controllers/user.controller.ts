@@ -1,6 +1,7 @@
 import {User, UserProps} from "../models/user.model";
 import {Conversation} from "../models/conversation.model";
 import {DeleteResult, getRepository, Repository} from "typeorm";
+import {validate} from "class-validator";
 
 export class UserController {
 
@@ -19,6 +20,18 @@ export class UserController {
             UserController.instance = new UserController();
         }
         return UserController.instance;
+    }
+
+    public async create(props: UserProps): Promise<User>{
+        const user = this.userRepository.create({
+            ...props
+        });
+
+        const err = await validate(user);
+        if(err.length > 0){
+            throw err;
+        }
+        return this.userRepository.save(user);
     }
 
     public async getByUserId(userId: string): Promise<User> {

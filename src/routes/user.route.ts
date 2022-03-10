@@ -3,6 +3,44 @@ import {UserController} from "../controllers/user.controller";
 
 const userRouter =  express.Router();
 
+
+/*Create*/
+userRouter.put('/', async (req, res)=>{
+    const username = req.body.username;
+    const mail = req.body.mail;
+    const password = req.body.password;
+
+    if(username === undefined){
+        res.status(404).send('Name undefined').end();
+        return;
+    }
+    if(mail === undefined){
+        res.status(404).send('Mail undefined').end();
+        return;
+    }
+    if(password === undefined){
+        res.status(404).send('Password undefined').end();
+        return;
+    }
+
+    const userController = await UserController.getInstance();
+    const userCreated = await userController.create({
+        username,
+        mail,
+        password
+    });
+
+    if(userCreated){
+        res.json(userCreated)
+        res.status(200).end();
+        return;
+    }
+
+    res.status(500).send('Internal Server Error').end();
+    return;
+});
+
+
 /*Get by id*/
 userRouter.get('/:userId', async (req, res)=>{
     const userId = req.params.userId;
