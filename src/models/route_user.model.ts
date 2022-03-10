@@ -3,6 +3,11 @@ import {Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColu
 import {IsDate, IsDefined, IsLatitude, IsLongitude} from "class-validator";
 import {ManyToOne} from "typeorm/browser";
 
+export interface PositionsTrip{
+    latitude : number;
+    longitude : number;
+    timestamp : Date;
+}
 export interface RouteUserProps {
     startLatitude: number;
     startLongitude: number;
@@ -11,6 +16,7 @@ export interface RouteUserProps {
     user: User;
     startDate: Date;
     endDate: Date;
+    distance : number;
 }
 
 @Entity()
@@ -34,6 +40,9 @@ export class RouteUser implements RouteUserProps {
     @IsLongitude()
     @Column({type: "float", nullable: false})
     startLongitude: number;
+
+    @Column({type : "double",nullable : false})
+    distance : number;
 
     @IsDate()
     @IsDefined()
