@@ -13,6 +13,7 @@ import {faqRouter} from "./faq.route";
 import {routeUserRouter} from "./routeUser.route";
 import {purchaseTicketRouter} from "./purchase_ticket.route";
 import {configure} from "../config/passport.config";
+import {scooterRouter} from "./scooter.route";
 
 
 export function buildRoutes() {
@@ -43,7 +44,7 @@ export function buildRoutes() {
     router.use("/conversation", ensureLoggedIn, isConversationMember, conversationRouter);
     router.use("/faq", faqRouter);
     router.use("/route_user", routeUserRouter)
-    router.use("/purchase_ticket", purchaseTicketRouter)
-
-    return router;
+    router.use("/purchase_ticket", purchaseTicketRouter);
+    router.use("/scooter", scooterRouter)
+    return router
 }
