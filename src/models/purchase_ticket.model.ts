@@ -1,26 +1,22 @@
 import {User} from "./user.model";
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from "typeorm";
-import {IsDate, IsDefined} from "class-validator";
+import {Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert} from "typeorm";
+import {IsDate} from "class-validator";
 
 export interface PurchaseTicketProps {
     user: User;
     useDate?: Date;
     rechargeStationId?: string;
+    availabilityDate?: Date;
 }
 
 @Entity()
 export class PurchaseTicket implements PurchaseTicketProps {
-
     @PrimaryGeneratedColumn("uuid")
     id: string;
+
+    @IsDate()
+    @Column({default: null, nullable: true })
+    availabilityDate: Date;
 
     @ManyToOne(() => User, user => user.purchaseTickets, { onDelete:"CASCADE"})
     user: User;
@@ -29,8 +25,7 @@ export class PurchaseTicket implements PurchaseTicketProps {
     rechargeStationId: string;
 
     @IsDate()
-    @IsDefined()
-    @Column({ nullable: true })
+    @Column({ default:null, nullable: true })
     useDate: Date;
 
     @CreateDateColumn()
