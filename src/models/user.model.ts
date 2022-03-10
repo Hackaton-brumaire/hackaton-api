@@ -2,8 +2,8 @@ import {
     BeforeInsert,
     Column,
     CreateDateColumn, DeleteDateColumn,
-    Entity,
-    OneToMany,
+    Entity, JoinColumn,
+    OneToMany, OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
@@ -75,8 +75,9 @@ export class User implements UserProps {
     @Column({select: false, nullable: true})
     resetTokenExpiration: Date;
 
-    @OneToMany(() => Scooter, scooter => scooter.user, {cascade: true, onDelete:'SET NULL', eager: true})
-    scooters: Scooter[];
+    @OneToOne(() => Scooter, scooter => scooter.user, {cascade: true, onDelete:'SET NULL', eager: true, nullable: true})
+    @JoinColumn()
+    scooter: Scooter[];
 
     @CreateDateColumn()
     createdAt: Date;

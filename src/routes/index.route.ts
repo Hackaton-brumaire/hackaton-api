@@ -45,6 +45,7 @@ export function buildRoutes() {
     router.use("/faq", faqRouter);
     router.use("/route_user", routeUserRouter)
     router.use("/purchase_ticket", purchaseTicketRouter);
-    router.use("/scooter", scooterRouter)
+    router.use("/scooter", scooterRouter);
+
     return router
 }
