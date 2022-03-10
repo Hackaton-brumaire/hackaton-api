@@ -1,9 +1,16 @@
-import {BeforeInsert, Entity, getRepository, JoinColumn, ManyToOne, OneToOne} from "typeorm";
+import {BeforeInsert, Entity, getRepository, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Conversation} from "./conversation.model";
 import {User} from "./user.model";
 
+export interface ActiveConversationProps{
+    customer: User;
+    expert: User;
+}
 @Entity()
 export class ActiveConversation {
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
+
     @ManyToOne(() => User, user => user.customers, {primary: true, onDelete: "CASCADE"})
     customer: User;
     @ManyToOne(() => User, user => user.experts, {primary: true,onDelete: "CASCADE"})
