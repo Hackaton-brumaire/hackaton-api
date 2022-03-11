@@ -1,4 +1,4 @@
-import {getRepository, Repository} from "typeorm";
+import {DeleteResult, getRepository, Repository} from "typeorm";
 import {PurchaseTicket, PurchaseTicketProps} from "../models/purchase_ticket.model";
 import {Message, MessageProps} from "../models/message.model";
 import {User} from "../models/user.model";
@@ -54,13 +54,11 @@ export class PurchaseTicketController {
         if(user.score === scoreForOneticket){
             if(user.purchaseTickets.length === 0){
                 
-                let availabilityDate = Date.now() + 60 * 60 * 24 * 31;
-                let props: PurchaseTicketProps;
-                props.user = user;
-                props.availabilityDate = new Date(availabilityDate);  
-                const purchaseTicket = this.purchaseTicketRepository
-                .create(props);
+                let availabilityDate = new Date((Date.now() + 60 * 60 * 24 * 31));
 
+                const purchaseTicket = this.purchaseTicketRepository
+                .create({user, availabilityDate});
+                user.score = 0;
                 await getRepository(User).save(user);
 
                 return await this.purchaseTicketRepository.save(purchaseTicket);
@@ -73,22 +71,34 @@ export class PurchaseTicketController {
         throw "your don't have enought Kilometers"
     }
 
-    public async updateUseDate(purchaseTicketId: string, props: PurchaseTicketProps): Promise<PurchaseTicket>{
-        await this.purchaseTicketRepository.createQueryBuilder()
-            .update()
-            .set(props)
-            .where("purchaseTicketId=:purchaseTicketId", {purchaseTicketId})
-            .execute();
+    public async updateUseDate(ticketId: string, props: PurchaseTicketProps): Promise<DeleteResult>{
+         await this.purchaseTicketRepository.save({
+             id: ticketId,
+             rechargeStationId: props.rechargeStationId
+         })
 
-        return this.purchaseTicketRepository.findOneOrFail(purchaseTicketId);
+        return await this.removeTicketWithTicketId(ticketId);
     }
 
-    public async removeTicket(userId: string, ticketId: string): Promise<void>{
+    public async removeTicketWithTicketId(ticketId: string): Promise<DeleteResult>{
+        const ticket = await this.purchaseTicketRepository.createQueryBuilder()
+            .select()
+            .leftJoinAndSelect("PurchaseTicket.user", "User")
+            .getOne();
+
+        const user = await getRepository(User).findOneOrFail(ticket.user.id);
+        user.score = 0;
+        await getRepository(User).save(user);
+
+        return await this.purchaseTicketRepository.delete(ticketId);
+    }
+
+    public async removeTicket(userId: string, ticketId: string): Promise<DeleteResult>{
         const user = await getRepository(User).findOneOrFail(userId);
 
         user.score = 0;
         await getRepository(User).save(user);
 
-        await this.purchaseTicketRepository.delete(ticketId);
+        return await this.purchaseTicketRepository.softDelete(ticketId);
     }
 }

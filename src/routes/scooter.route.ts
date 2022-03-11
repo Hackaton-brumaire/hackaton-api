@@ -69,7 +69,8 @@ scooterRouter.delete("/:scooterId",ensureLoggedIn, isAdmin, async (req, res) => 
    }
 });
 
-scooterRouter.put("/addUser/:scooterId", ensureLoggedIn, isScooterOwner, async (req, res)=> {
+scooterRouter.put("/addUser/:scooterId", ensureLoggedIn
+    , async (req, res)=> {
     try {
         const scooterId = req.params.scooterId;
         const scooterController = await ScooterController.getInstance();
