@@ -2,7 +2,6 @@ import express from "express";
 import {ensureLoggedIn} from "../middlewares/auth.middleware";
 import {RouteUserController} from "../controllers/routeUser.controller";
 import {logger} from "../config/logging.config";
-import {PositionsTrip} from "../models/route_user.model";
 import {User} from "../models/user.model";
 import {isAdmin} from "../middlewares/user.middleware";
 import {userRouter} from "./user.route";
@@ -49,23 +48,18 @@ routeUserRouter.get('/userId/:id',ensureLoggedIn,async (req,res) =>{
 });
 
 routeUserRouter.post('/create',ensureLoggedIn, async(req,res)=>{
-    if (!(req.body === null || req.body === undefined)) {
+    const json = req.body;
+
+    if (json === null || json === undefined) {
         res.status(400).end();
         return;
     }
-    let positionsTrips: PositionsTrip[] = [];
-    for (let position in req.body) {
-        positionsTrips.push({
-            latitude: Number(position["latitude"]),
-            longitude: Number(position["longitude"]),
-            timestamp: position["timestamp"]
-        });
-    }
     let distance : number = 0;
-    for (let i = 0; i < positionsTrips.length - 1; i++) {
-        const position1 = positionsTrips[i].latitude + ',' + positionsTrips[i].longitude;
-        const position2 = positionsTrips[i + 1].latitude + ',' + positionsTrips[i + 1].longitude;
+    for (let i = 0; i < json.length - 1; i++) {
+        const position1 = json[i].latitude + ',' + json[i].longitude;
+        const position2 = json[i + 1].latitude + ',' + json[i + 1].longitude;
 
+        console.log(position2,position1);
         const config = {
             method: 'get',
             url: 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=' + position1 + '&destinations=' + position2 +'&units=metric&key=AIzaSyCGtPwGNYa-_NBmRht_r_acXsanChReTbg',
@@ -73,12 +67,13 @@ routeUserRouter.post('/create',ensureLoggedIn, async(req,res)=>{
         };
 
         await axios(config)
-            .then(function (response) {return JSON.stringify(response.data);})
-            .then(function(response){
-                distance += Number(response["rows"][0]["element"][0]["distance"]["value"]);
+            .then(async function(response){
+                console.log(response.data.rows[0].elements[0].distance.value);
+                distance += Number(response.data.rows[0].elements[0].distance.value);
                 console.log("distance du trajet en cours de calcul : " + distance);
             })
-            .catch(function (error) {
+            .catch(async function (error) {
+                console.log("catch");
                 console.log(error);
             });
     }
@@ -86,13 +81,13 @@ routeUserRouter.post('/create',ensureLoggedIn, async(req,res)=>{
     console.log("distance calculée : " + distance);
     const routeUserController = await RouteUserController.getInstance();
     const routeUser = await routeUserController.create({
-        startLatitude : Number(positionsTrips[0].latitude),
-        startLongitude : Number(positionsTrips[0].longitude),
-        endLatitude : Number(positionsTrips[positionsTrips.length - 1].latitude),
-        endLongitude : Number(positionsTrips[positionsTrips.length - 1].longitude),
+        startLatitude : Number(json[0].latitude),
+        startLongitude : Number(json[0].longitude),
+        endLatitude : Number(json[json.length - 1].latitude),
+        endLongitude : Number(json[json.length - 1].longitude),
         user : req.user as User,
-        startDate : new Date(Number(positionsTrips[0].timestamp)),
-        endDate : new Date(Number(positionsTrips[positionsTrips.length - 1].timestamp)),
+        startDate : new Date(Number(json[0].timestamp)),
+        endDate : new Date(Number(json[json.length - 1].timestamp)),
         distance : distance
     });
     if(routeUser != null){
