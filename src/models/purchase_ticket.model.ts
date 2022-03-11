@@ -3,8 +3,7 @@ import {Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, UpdateDat
 import {IsDate} from "class-validator";
 
 export interface PurchaseTicketProps {
-    user: User;
-    useDate?: Date;
+    user?: User;
     rechargeStationId?: string;
     availabilityDate?: Date;
 }
@@ -24,9 +23,6 @@ export class PurchaseTicket implements PurchaseTicketProps {
     @Column({default: null, nullable: true })
     rechargeStationId: string;
 
-    @IsDate()
-    @Column({ default:null, nullable: true })
-    useDate: Date;
 
     @CreateDateColumn()
     createdAt: Date;
