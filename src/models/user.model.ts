@@ -2,8 +2,8 @@ import {
     BeforeInsert,
     Column,
     CreateDateColumn, DeleteDateColumn,
-    Entity,
-    OneToMany,
+    Entity, JoinColumn,
+    OneToMany, OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
@@ -13,6 +13,7 @@ import {hash} from "bcrypt";
 import {PurchaseTicket} from "./purchase_ticket.model";
 import {ActiveConversation} from "./active_conversation.model";
 import {Message} from "./message.model";
+import {Scooter} from "./scooter.model";
 
 export enum UserType {
     USER = "USER",
@@ -73,6 +74,10 @@ export class User implements UserProps {
 
     @Column({select: false, nullable: true})
     resetTokenExpiration: Date;
+
+    @OneToOne(() => Scooter, scooter => scooter.user, {cascade: true, onDelete:'SET NULL', eager: true, nullable: true})
+    @JoinColumn()
+    scooter: Scooter[];
 
     @CreateDateColumn()
     createdAt: Date;

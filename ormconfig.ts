@@ -6,8 +6,12 @@ module.exports = {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [__dirname + "/**/models/*.ts"],
+    entities: [__dirname + "/**/models/*.ts", __dirname + './build/**/models/*.ts'],
     synchronize: true,
-    seeds: ['src/**/*.seed.ts'],
-    factories: ['src/**/*.factory.ts'],
+    ssl: {
+        require: true,
+        rejectUnauthorized: false
+    }
+
+
 }

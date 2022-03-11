@@ -13,15 +13,17 @@ import {faqRouter} from "./faq.route";
 import {routeUserRouter} from "./routeUser.route";
 import {purchaseTicketRouter} from "./purchase_ticket.route";
 import {configure} from "../config/passport.config";
+import {scooterRouter} from "./scooter.route";
 
 
 export function buildRoutes() {
     const router = Router();
     configure()
     logger.info("Init routes")
-    router.use(require('cors')({credentials: true, origin: process.env.FRONT_WEB_URL}));
+    //router.use(require('cors')({credentials: true, origin: process.env.FRONT_WEB_URL}));
+    router.use(require('cors')({credentials: true, origin: "*"}));
     router.use(require('express-session')({
-        secret: process.env.ORG_APP_SECRET,
+        secret: process.env.APP_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {
@@ -42,5 +44,8 @@ export function buildRoutes() {
     router.use("/conversation", ensureLoggedIn, isConversationMember, conversationRouter);
     router.use("/faq", faqRouter);
     router.use("/route_user", routeUserRouter)
-    router.use("/purchase_ticket", purchaseTicketRouter)
+    router.use("/purchase_ticket", purchaseTicketRouter);
+    router.use("/scooter", scooterRouter);
+
+    return router
 }
