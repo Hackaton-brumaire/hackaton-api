@@ -58,7 +58,7 @@ export class User implements UserProps {
     @Column({type: "int", nullable: false, default: 0})
     allTimeScore: number;
 
-    @OneToMany(() => PurchaseTicket, purchaseTicket => purchaseTicket.user, {cascade: true})
+    @OneToMany(() => PurchaseTicket, purchaseTicket => purchaseTicket.user, {cascade: true, eager: true})
     purchaseTickets: PurchaseTicket[];
 
     @OneToMany(() => ActiveConversation, activeConversation => activeConversation.customer, {cascade: true, onDelete:"SET NULL"})

@@ -90,7 +90,18 @@ routeUserRouter.post('/create',ensureLoggedIn, async(req,res)=>{
         endDate : new Date(Number(json[json.length - 1].timestamp)),
         distance : distance
     });
+
     if(routeUser != null){
+
+        const userController = await UserController.getInstance();
+        routeUser.user.score += Math.floor(distance / 1000);
+        routeUser.user.score = routeUser.user.score > 100 ? 100 : routeUser.user.score;
+        const user = await userController.updateUser(routeUser.user.id, routeUser.user);
+        if(user === null){
+            res.status(400).end();
+        }
+
+
         res.status(201);
         res.json(routeUser).end();
     }else
